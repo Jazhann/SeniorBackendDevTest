@@ -6,12 +6,11 @@ import { AuthenticationRepository } from '../repositories/authentication.reposit
 import { AuthenticationIRepository } from '../../domain/authentication.i.repository';
 import { AuthenticationController } from './authentication.controller';
 import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from './auth.constants';
 import { User } from '@ecommerce/models';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CreateUser } from '../../aplication/createUser.service';
 import { VerifyToken } from '../../aplication/verifyToken.service';
-import { SaveOrder } from '../../aplication/saveOrder.service';
+import config from '../../../config';
 
 @Module({
   imports: [
@@ -21,18 +20,18 @@ import { SaveOrder } from '../../aplication/saveOrder.service';
         transport: Transport.KAFKA,
         options: {
           client: {
-            clientId: 'authentication-service',
-            brokers: ['kafka:9092'],
+            clientId: config.clientId,
+            brokers: config.brokers,
           },
           consumer: {
-            groupId: 'authentication-service-consumer',
+            groupId: config.groupId,
           },
         },
       },
     ]),
     JwtModule.register({
       global: true,
-      secret: jwtConstants.secret,
+      secret: config.jwtSecret,
       signOptions: { expiresIn: '60s' },
     }),
     TypeOrmModule.forFeature([User]),
@@ -58,13 +57,6 @@ import { SaveOrder } from '../../aplication/saveOrder.service';
       provide: VerifyToken,
       useFactory(authenticationRepository: AuthenticationIRepository) {
         return new VerifyToken(authenticationRepository);
-      },
-      inject: [AuthenticationRepository],
-    },
-    {
-      provide: SaveOrder,
-      useFactory(authenticationRepository: AuthenticationIRepository) {
-        return new SaveOrder(authenticationRepository);
       },
       inject: [AuthenticationRepository],
     },

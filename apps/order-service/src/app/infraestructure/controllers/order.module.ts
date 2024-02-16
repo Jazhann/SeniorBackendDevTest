@@ -8,6 +8,7 @@ import { OrderIRepository } from '../../domain/order.i.repository';
 import { Order } from '@ecommerce/models';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UpdateOrder } from '../../aplication/updateOrder.service';
+import config from '../../../config';
 
 @Module({
   imports: [
@@ -17,11 +18,11 @@ import { UpdateOrder } from '../../aplication/updateOrder.service';
         transport: Transport.KAFKA,
         options: {
           client: {
-            clientId: 'order-service',
-            brokers: ['kafka:9092'],
+            clientId: config.clientId,
+            brokers: config.brokers,
           },
           consumer: {
-            groupId: 'order-service-consumer',
+            groupId: config.groupId,
           },
         },
       },

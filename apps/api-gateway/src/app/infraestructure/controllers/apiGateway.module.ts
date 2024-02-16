@@ -11,6 +11,7 @@ import { ApiGatewayKafkaRepository } from '../repositories/apiGatewayKafka.respo
 import { ApiGatewayController } from './apiGateway.controller';
 import { ApiGatewayIRepository } from '../../domain/apiGateway.i.repository';
 import { CreateUser } from '../../aplication/createUser.service';
+import config from '../../../config';
 
 @Module({
   imports: [
@@ -20,11 +21,11 @@ import { CreateUser } from '../../aplication/createUser.service';
         transport: Transport.KAFKA,
         options: {
           client: {
-            clientId: 'api-gateway-product',
-            brokers: ['kafka:9092'],
+            clientId: config.clientId,
+            brokers: config.brokers,
           },
           consumer: {
-            groupId: 'api-gateway-product-consumer',
+            groupId: config.groupId,
           },
         },
       },
