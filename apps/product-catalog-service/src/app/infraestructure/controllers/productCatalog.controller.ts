@@ -1,6 +1,6 @@
 import { Controller, Inject, Logger, OnModuleInit } from '@nestjs/common';
 
-import { ClientKafka, MessagePattern, Payload } from '@nestjs/microservices';
+import { ClientKafka, EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import { GetProductCatalog } from '../../aplication/getProductCatalog.service';
 import { CreateProduct } from '../../aplication/createProduct.service';
 import { RemoveProduct } from '../../aplication/removeProduct.service';
@@ -40,11 +40,20 @@ export class ProductCatalogController implements OnModuleInit {
     }
   }
 
+  @EventPattern('order-events')
+  async handleOrderEvents(@Payload() message) {
+    Logger.log('Message', { message });
+    switch (message.type) {
+      case 'order-created':
+        return await this.updateProduct.run(message.data);
+    }
+  }
+
   /**
    * Subscribes to necessary Kafka topics upon module initialization.
    */
   onModuleInit() {
-    this.kafkaClient.subscribeToResponseOf(`user-events`);
+    this.kafkaClient.subscribeToResponseOf(`order-events`);
     this.kafkaClient.subscribeToResponseOf(`product-events`);
   }
 }

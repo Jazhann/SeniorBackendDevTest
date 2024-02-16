@@ -3,16 +3,17 @@ import { Module } from '@nestjs/common';
 import { OrderModule } from './order.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Order, Product, User } from '@ecommerce/models';
+import config from '../../../config';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: 'mariadb',
-      host: 'mariadb',
-      port: 3306,
-      username: 'user',
-      password: 'test123',
-      database: 'ecommerce',
+      type: config.dbType,
+      host: config.dbHost,
+      port: config.dbPort,
+      username: config.dbUserName,
+      password: config.dbPassword,
+      database: config.dbDatabase,
       entities: [Order, Product, User],
       synchronize: true,
     }),

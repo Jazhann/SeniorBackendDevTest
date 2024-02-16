@@ -6,8 +6,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Login, User } from '@ecommerce/models';
 import * as bcrypt from 'bcryptjs';
-import { jwtConstants } from '../controllers/auth.constants';
 import { ErrorHandler } from '@ecommerce/error';
+import config from '../../../config';
 
 export class AuthenticationRepository implements AuthenticationIRepository {
   constructor(
@@ -22,7 +22,7 @@ export class AuthenticationRepository implements AuthenticationIRepository {
    * @returns The created user object without the password.
    */
   async createUser(user: User): Promise<Omit<User, 'password'>> {
-    const hashedPassword = await bcrypt.hash(user.password, 10);
+    const hashedPassword = await bcrypt.hash(user.password, config.saltRounds);
     const userHashed = { ...user, password: hashedPassword };
     try {
       const result = await this.userRepository.save(userHashed);
@@ -60,6 +60,6 @@ export class AuthenticationRepository implements AuthenticationIRepository {
    * @returns The user object associated with the token, without the password.
    */
   async verifyToken(token: string): Promise<Omit<User, 'password'>> {
-    return await this.jwtService.verifyAsync(token, { secret: jwtConstants.secret });
+    return await this.jwtService.verifyAsync(token, { secret: config.jwtSecret });
   }
 }

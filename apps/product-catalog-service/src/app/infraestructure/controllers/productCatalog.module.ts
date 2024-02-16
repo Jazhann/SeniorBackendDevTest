@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-
 import { ProductCatalogController } from './productCatalog.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { GetProductCatalog } from '../../aplication/getProductCatalog.service';
@@ -11,6 +10,7 @@ import { GetProduct } from '../../aplication/getProduct.service';
 import { CreateProduct } from '../../aplication/createProduct.service';
 import { UpdateProduct } from '../../aplication/updateProduct.service';
 import { RemoveProduct } from '../../aplication/removeProduct.service';
+import config from '../../../config';
 @Module({
   imports: [
     ClientsModule.register([
@@ -19,11 +19,11 @@ import { RemoveProduct } from '../../aplication/removeProduct.service';
         transport: Transport.KAFKA,
         options: {
           client: {
-            clientId: 'product-catalog-service',
-            brokers: ['kafka:9092'],
+            clientId: config.clientId,
+            brokers: config.brokers,
           },
           consumer: {
-            groupId: 'product-catalog-consumer',
+            groupId: config.groupId,
           },
         },
       },
