@@ -19,6 +19,7 @@ export class ConfigService {
 
   constructor() {
     this.config = new Config({
+      port: process.env.PORT,
       clientId: process.env.KAFKA_CLIENTID,
       brokers: process.env.KAFKA_BROKERS,
       groupId: process.env.KAFKA_GROUPID,

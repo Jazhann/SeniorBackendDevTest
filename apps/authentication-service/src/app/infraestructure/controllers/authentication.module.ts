@@ -32,7 +32,7 @@ import config from '../../../config';
     JwtModule.register({
       global: true,
       secret: config.jwtSecret,
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: config.jwtExpiresIn },
     }),
     TypeOrmModule.forFeature([User]),
   ],

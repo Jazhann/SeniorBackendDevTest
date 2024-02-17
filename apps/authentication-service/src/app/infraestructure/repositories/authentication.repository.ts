@@ -1,4 +1,4 @@
-import { Inject, UnauthorizedException } from '@nestjs/common';
+import { Inject, Logger, UnauthorizedException } from '@nestjs/common';
 import { AuthenticationIRepository } from '../../domain/authentication.i.repository';
 import { ClientKafka } from '@nestjs/microservices';
 import { JwtService } from '@nestjs/jwt';
@@ -22,6 +22,7 @@ export class AuthenticationRepository implements AuthenticationIRepository {
    * @returns The created user object without the password.
    */
   async createUser(user: User): Promise<Omit<User, 'password'>> {
+    Logger.log(`Creating user: ${user.email}`);
     const hashedPassword = await bcrypt.hash(user.password, config.saltRounds);
     const userHashed = { ...user, password: hashedPassword };
     try {
@@ -40,6 +41,7 @@ export class AuthenticationRepository implements AuthenticationIRepository {
    * @throws UnauthorizedException If authentication fails.
    */
   async authenticate(login: Login): Promise<{ token: string }> {
+    Logger.log(`Authenticating user: ${login.email}`);
     try {
       const user = await this.userRepository.findOneBy({ email: login.email });
       if (user && (await bcrypt.compare(login.password, user.password))) {
@@ -60,6 +62,7 @@ export class AuthenticationRepository implements AuthenticationIRepository {
    * @returns The user object associated with the token, without the password.
    */
   async verifyToken(token: string): Promise<Omit<User, 'password'>> {
+    Logger.log(`Verifying token`);
     return await this.jwtService.verifyAsync(token, { secret: config.jwtSecret });
   }
 }

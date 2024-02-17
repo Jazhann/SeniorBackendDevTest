@@ -1,4 +1,4 @@
-import { Controller, Inject, Logger, OnModuleInit } from '@nestjs/common';
+import { Controller, Inject, OnModuleInit } from '@nestjs/common';
 import { ClientKafka, MessagePattern, Payload } from '@nestjs/microservices';
 import { Authenticate } from '../../aplication/authenticate.service';
 import { CreateUser } from '../../aplication/createUser.service';
@@ -19,7 +19,6 @@ export class AuthenticationController implements OnModuleInit {
    */
   @MessagePattern('user-events')
   handleAuthenticate(@Payload() message) {
-    Logger.log('Handling user-event message', { message });
     switch (message.type) {
       case 'login':
         return this.authenticate.run(message.data);

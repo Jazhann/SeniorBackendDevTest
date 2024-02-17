@@ -4,6 +4,7 @@ import { NestFactory } from '@nestjs/core';
 import { ApiGatewayModule } from './app/infraestructure/controllers/apiGateway.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import env from './config';
 
 async function bootstrap() {
   const globalPrefix = 'api';
@@ -12,6 +13,7 @@ async function bootstrap() {
     .setTitle('Api Gateway')
     .setDescription('Ecommerce Api Gateway')
     .setVersion('1.0')
+    .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'access-token')
     .build();
   app.setGlobalPrefix(globalPrefix);
   const document = SwaggerModule.createDocument(app, config);
@@ -20,11 +22,11 @@ async function bootstrap() {
     transport: Transport.KAFKA,
     options: {
       client: {
-        clientId: 'api-gateway',
-        brokers: ['kafka:9092'],
+        clientId: env.clientId,
+        brokers: env.brokers,
       },
       consumer: {
-        groupId: 'api-gateway-consumer',
+        groupId: env.groupId,
       },
     },
   });
@@ -34,7 +36,7 @@ async function bootstrap() {
 
   SwaggerModule.setup(`${globalPrefix}/docs`, app, document);
 
-  const port = process.env.PORT || 3003;
+  const port = env.port || 3003;
   await app.listen(port);
   Logger.log(`🚀 Application is running on: http://localhost:${port}/${globalPrefix}`);
   Logger.log(`Swagger is running on: http://localhost:${port}/api/docs`);

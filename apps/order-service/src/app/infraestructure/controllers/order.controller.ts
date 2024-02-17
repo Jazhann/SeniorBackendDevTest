@@ -1,4 +1,4 @@
-import { Controller, Inject, Logger, OnModuleInit } from '@nestjs/common';
+import { Controller, Inject, OnModuleInit } from '@nestjs/common';
 import { ClientKafka, MessagePattern, EventPattern, Payload } from '@nestjs/microservices';
 import { CreateOrder } from '../../aplication/createOrder.service';
 import { UpdateOrder } from '../../aplication/updateOrder.service';
@@ -17,7 +17,6 @@ export class OrderController implements OnModuleInit {
    */
   @MessagePattern('order-events')
   handleCreateOrder(@Payload() message) {
-    Logger.log('Handling order creation message', { message });
     switch (message.type) {
       case 'create-order':
         return this.createOrder.run(message.data);
@@ -30,7 +29,6 @@ export class OrderController implements OnModuleInit {
    */
   @EventPattern('product-events')
   handleUpdateOrdeProducts(@Payload() message) {
-    Logger.log('Handling order update event', { message });
     switch (message.type) {
       case 'product-updated':
         return this.updateOrder.run(message.data);
@@ -43,7 +41,6 @@ export class OrderController implements OnModuleInit {
    */
   @EventPattern('user-events')
   handleUpdateOrderUser(@Payload() message) {
-    Logger.log('Handling order update event', { message });
     switch (message.type) {
       case 'user-loged':
         return this.updateOrder.run(message.data);

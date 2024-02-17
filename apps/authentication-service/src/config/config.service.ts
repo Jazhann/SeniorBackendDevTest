@@ -30,6 +30,7 @@ export class ConfigService {
       groupId: process.env.KAFKA_GROUPID,
       saltRounds: process.env.BCRYPT_SALT,
       jwtSecret: process.env.JWT_SECRET,
+      jwtExpiresIn: process.env.JWT_EXPIRESIN,
     });
   }
 
