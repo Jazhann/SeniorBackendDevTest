@@ -1,4 +1,4 @@
-import { Inject, Logger, UnauthorizedException } from '@nestjs/common';
+import { HttpStatus, Inject, Logger, UnauthorizedException } from '@nestjs/common';
 import { AuthenticationIRepository } from '../../domain/authentication.i.repository';
 import { ClientKafka } from '@nestjs/microservices';
 import { JwtService } from '@nestjs/jwt';
@@ -52,7 +52,7 @@ export class AuthenticationRepository implements AuthenticationIRepository {
         throw new UnauthorizedException();
       }
     } catch (error) {
-      ErrorHandler.handleError(error.message, error.errorCode, 'AuthenticationRepository.authenticate()');
+      ErrorHandler.handleError(error.message, error.status, 'AuthenticationRepository.authenticate()');
     }
   }
 

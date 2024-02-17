@@ -11,7 +11,7 @@ export class Order {
   @JoinTable()
   products: Product[];
 
-  @Column('date')
+  @Column('timestamp')
   date: Date;
 
   @ManyToOne(() => User, (user) => user.orders)
