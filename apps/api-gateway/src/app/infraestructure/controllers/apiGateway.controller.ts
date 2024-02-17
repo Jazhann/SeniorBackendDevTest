@@ -7,7 +7,7 @@ import { UpdateProduct } from '../../aplication/updateProduct.service';
 import { ClientKafka } from '@nestjs/microservices';
 import { Authenticate } from '../../aplication/authenticate.service';
 import { CreateOrder } from '../../aplication/createOrder.service';
-import { ApiOperation, ApiTags, ApiResponse, ApiBody, ApiQuery } from '@nestjs/swagger';
+import { ApiOperation, ApiTags, ApiResponse, ApiBody, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { LoginModel, OrderModel, ProductModel, UserModel } from '@ecommerce/models';
 import { CreateUser } from '../../aplication/createUser.service';
 import { AuthGuard } from '../guards/auth.guard';
@@ -45,6 +45,7 @@ export class ApiGatewayController implements OnModuleInit {
   }
 
   @UseGuards(AuthGuard)
+  @ApiBearerAuth('access-token')
   @ApiTags('product')
   @ApiOperation({ summary: 'Create Product', description: 'Create a product.' })
   @ApiBody({ type: ProductModel })
@@ -56,6 +57,7 @@ export class ApiGatewayController implements OnModuleInit {
   }
 
   @UseGuards(AuthGuard)
+  @ApiBearerAuth('access-token')
   @ApiTags('product')
   @ApiOperation({ summary: 'Update Product', description: 'Update a product.' })
   @ApiBody({ type: ProductModel, description: 'The payload to update a product.' })
@@ -67,6 +69,7 @@ export class ApiGatewayController implements OnModuleInit {
   }
 
   @UseGuards(AuthGuard)
+  @ApiBearerAuth('access-token')
   @ApiTags('product')
   @ApiOperation({ summary: 'Remove Product', description: 'Remove a product.' })
   @ApiQuery({ name: 'id', type: String, description: 'The ID of the product to retrieve.' })

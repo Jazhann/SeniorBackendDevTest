@@ -5,5 +5,6 @@ export interface ProductCatalogIRepository {
   getProduct(id: string);
   createProduct(Product: Product);
   updateProduct(Product: Product);
+  updateProductAmount(Product: Product);
   removeProduct(id: string);
 }

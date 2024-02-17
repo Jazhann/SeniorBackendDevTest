@@ -1,9 +1,9 @@
-import { Inject, OnModuleInit } from '@nestjs/common';
-import { ApiGatewayIRepository } from '../../domain/apiGateway.i.repository';
+import { Inject, Logger, OnModuleInit } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 import { LoginModel, OrderModel, ProductModel, UserModel } from '@ecommerce/models';
 import { ErrorHandler } from '@ecommerce/error';
+import { ApiGatewayIRepository } from '../../domain/apiGateway.i.repository';
 
 /**
  * Repository class for API Gateway with Kafka communication.
@@ -16,6 +16,7 @@ export class ApiGatewayKafkaRepository implements ApiGatewayIRepository, OnModul
    * @returns A promise that resolves to an array of ProductModels.
    */
   async getProductCatalog(): Promise<ProductModel[]> {
+    Logger.log('Getting product catalog');
     const message = JSON.stringify({ type: 'get-list', data: undefined });
     try {
       return await lastValueFrom(this.kafkaClient.send('product-events', message));
@@ -30,6 +31,7 @@ export class ApiGatewayKafkaRepository implements ApiGatewayIRepository, OnModul
    * @returns A promise that resolves to a ProductModel.
    */
   async getProduct(id: string): Promise<ProductModel> {
+    Logger.log(`Getting product with id`);
     const message = JSON.stringify({ type: 'get-product', data: id });
     try {
       return await lastValueFrom(this.kafkaClient.send('product-events', message));
@@ -44,6 +46,7 @@ export class ApiGatewayKafkaRepository implements ApiGatewayIRepository, OnModul
    * @returns A promise that resolves to the created ProductModel.
    */
   async createProduct(product: ProductModel): Promise<ProductModel> {
+    Logger.log(`Creating product`);
     const message = JSON.stringify({ type: 'create-product', data: product });
     try {
       return await lastValueFrom(this.kafkaClient.send('product-events', message));
@@ -58,6 +61,7 @@ export class ApiGatewayKafkaRepository implements ApiGatewayIRepository, OnModul
    * @returns A promise that resolves to an object indicating the result of the update operation.
    */
   async updateProduct(product: ProductModel): Promise<{ result: string }> {
+    Logger.log(`Updating product`);
     const message = JSON.stringify({ type: 'update-product', data: product });
     try {
       return await lastValueFrom(this.kafkaClient.send('product-events', message));
@@ -72,6 +76,7 @@ export class ApiGatewayKafkaRepository implements ApiGatewayIRepository, OnModul
    * @returns A promise that resolves to an object indicating the result of the removal operation.
    */
   async removeProduct(id: string): Promise<{ result: string }> {
+    Logger.log(`Removing product id`);
     const message = JSON.stringify({ type: 'remove-product', data: id });
     try {
       return await lastValueFrom(this.kafkaClient.send('product-events', message));
@@ -86,6 +91,7 @@ export class ApiGatewayKafkaRepository implements ApiGatewayIRepository, OnModul
    * @returns A promise that resolves to an object containing the authentication token.
    */
   async authenticate(login: LoginModel): Promise<{ token: string }> {
+    Logger.log(`Authenticating`);
     const message = JSON.stringify({ type: 'login', data: login });
     try {
       return await lastValueFrom(this.kafkaClient.send('user-events', message));
@@ -100,6 +106,7 @@ export class ApiGatewayKafkaRepository implements ApiGatewayIRepository, OnModul
    * @returns A promise that resolves to the created OrderModel.
    */
   async createOrder(order: OrderModel): Promise<OrderModel> {
+    Logger.log(`Creating order`);
     const message = JSON.stringify({ type: 'create-order', data: order });
     try {
       return await lastValueFrom(this.kafkaClient.send('order-events', message));
@@ -114,6 +121,7 @@ export class ApiGatewayKafkaRepository implements ApiGatewayIRepository, OnModul
    * @returns A promise that resolves to the created UserModel, omitting the password.
    */
   async createUser(user: UserModel): Promise<Omit<UserModel, 'password'>> {
+    Logger.log(`Creating user`);
     const message = JSON.stringify({ type: 'create-user', data: user });
     try {
       return await lastValueFrom(this.kafkaClient.send('user-events', message));

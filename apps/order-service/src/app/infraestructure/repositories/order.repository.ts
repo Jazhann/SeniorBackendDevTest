@@ -18,6 +18,7 @@ export class OrderRepository implements OrderIRepository {
    * @returns The saved order entity.
    */
   async createOrder(order: Order): Promise<Order> {
+    Logger.log(`Creating order: ${JSON.stringify(order)}}`);
     try {
       const result = await this.orderRepository.save(order);
       const message = JSON.stringify({
@@ -36,7 +37,7 @@ export class OrderRepository implements OrderIRepository {
    * @param product Optional product entity to update the order with.
    */
   async updateOrder(product?: Product): Promise<void> {
-    Logger.log('Update order', { product });
+    Logger.log(`Updating order with product: ${JSON.stringify(product)}`);
     // Implementation for updating an order goes here.
     // This method is currently a placeholder and needs to be implemented.
   }

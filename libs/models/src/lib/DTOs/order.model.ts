@@ -5,7 +5,17 @@ export class OrderModel {
   @ApiProperty({ example: 1, description: 'Order identifier' })
   id: number;
 
-  @ApiProperty({ example: [], description: 'Order products list' })
+  @ApiProperty({
+    example: [
+      {
+        id: 4,
+        name: 'Laptop',
+        value: 100,
+        amount: 1,
+      },
+    ],
+    description: 'Order products list',
+  })
   products: ProductModel[];
 
   @ApiProperty({ example: '2023-10-04', description: 'Product identifier' })

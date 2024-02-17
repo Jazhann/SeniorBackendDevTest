@@ -25,7 +25,7 @@ export class Config {
   constructor(config) {
     this.dbType = config.dbType;
     this.dbHost = config.dbHost;
-    this.dbPort = config.dbPort;
+    this.dbPort = +config.dbPort;
     this.dbUserName = config.dbUserName;
     this.dbPassword = config.dbPassword;
     this.dbDatabase = config.dbDatabase;
