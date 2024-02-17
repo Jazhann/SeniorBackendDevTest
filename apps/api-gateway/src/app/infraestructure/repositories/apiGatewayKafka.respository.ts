@@ -1,8 +1,7 @@
-import { Inject, Logger, OnModuleInit } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Logger, OnModuleInit } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 import { LoginModel, OrderModel, ProductModel, UserModel } from '@ecommerce/models';
-import { ErrorHandler } from '@ecommerce/error';
 import { ApiGatewayIRepository } from '../../domain/apiGateway.i.repository';
 
 /**
@@ -21,7 +20,7 @@ export class ApiGatewayKafkaRepository implements ApiGatewayIRepository, OnModul
     try {
       return await lastValueFrom(this.kafkaClient.send('product-events', message));
     } catch (error) {
-      ErrorHandler.handleError(error.message, error.errorCode, 'ApiGatewayKafkaRespository.getProductCatalog()');
+      this.handleError(error);
     }
   }
 
@@ -36,7 +35,7 @@ export class ApiGatewayKafkaRepository implements ApiGatewayIRepository, OnModul
     try {
       return await lastValueFrom(this.kafkaClient.send('product-events', message));
     } catch (error) {
-      ErrorHandler.handleError(error.message, error.errorCode, 'ApiGatewayKafkaRespository.getProduct()');
+      this.handleError(error);
     }
   }
 
@@ -51,7 +50,7 @@ export class ApiGatewayKafkaRepository implements ApiGatewayIRepository, OnModul
     try {
       return await lastValueFrom(this.kafkaClient.send('product-events', message));
     } catch (error) {
-      ErrorHandler.handleError(error.message, error.errorCode, 'ApiGatewayKafkaRespository.createProduct()');
+      this.handleError(error);
     }
   }
 
@@ -66,7 +65,7 @@ export class ApiGatewayKafkaRepository implements ApiGatewayIRepository, OnModul
     try {
       return await lastValueFrom(this.kafkaClient.send('product-events', message));
     } catch (error) {
-      ErrorHandler.handleError(error.message, error.errorCode, 'ApiGatewayKafkaRespository.updateProduct()');
+      this.handleError(error);
     }
   }
 
@@ -81,7 +80,7 @@ export class ApiGatewayKafkaRepository implements ApiGatewayIRepository, OnModul
     try {
       return await lastValueFrom(this.kafkaClient.send('product-events', message));
     } catch (error) {
-      ErrorHandler.handleError(error.message, error.errorCode, 'ApiGatewayKafkaRespository.removeProduct()');
+      this.handleError(error);
     }
   }
 
@@ -96,7 +95,7 @@ export class ApiGatewayKafkaRepository implements ApiGatewayIRepository, OnModul
     try {
       return await lastValueFrom(this.kafkaClient.send('user-events', message));
     } catch (error) {
-      ErrorHandler.handleError(error.message, error.errorCode, 'ApiGatewayKafkaRespository.authenticate()');
+      this.handleError(error);
     }
   }
 
@@ -111,7 +110,7 @@ export class ApiGatewayKafkaRepository implements ApiGatewayIRepository, OnModul
     try {
       return await lastValueFrom(this.kafkaClient.send('order-events', message));
     } catch (error) {
-      ErrorHandler.handleError(error.message, error.errorCode, 'ApiGatewayKafkaRespository.createOrder()');
+      this.handleError(error);
     }
   }
 
@@ -126,8 +125,19 @@ export class ApiGatewayKafkaRepository implements ApiGatewayIRepository, OnModul
     try {
       return await lastValueFrom(this.kafkaClient.send('user-events', message));
     } catch (error) {
-      ErrorHandler.handleError(error.message, error.errorCode, 'ApiGatewayKafkaRespository.createUser()');
+      this.handleError(error);
     }
+  }
+
+  private handleError(error) {
+    throw new HttpException(
+      {
+        status: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+        message: error.message || 'Internal Server Error',
+        error: error.error || null,
+      },
+      error.status || HttpStatus.INTERNAL_SERVER_ERROR
+    );
   }
 
   /**

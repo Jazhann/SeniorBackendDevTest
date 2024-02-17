@@ -1,6 +1,6 @@
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-
+import helmet from 'helmet';
 import { ApiGatewayModule } from './app/infraestructure/controllers/apiGateway.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
@@ -35,6 +35,19 @@ async function bootstrap() {
   app.setGlobalPrefix(globalPrefix);
 
   SwaggerModule.setup(`${globalPrefix}/docs`, app, document);
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+    })
+  );
+
+  app.use(helmet());
 
   const port = env.port || 3003;
   await app.listen(port);

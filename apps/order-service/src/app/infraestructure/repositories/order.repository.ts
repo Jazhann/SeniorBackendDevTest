@@ -28,7 +28,7 @@ export class OrderRepository implements OrderIRepository {
       this.kafkaClient.emit('order-events', message);
       return result;
     } catch (error) {
-      ErrorHandler.handleError(error.message, error.errorCode, 'OrderRepository.createOrder()');
+      ErrorHandler.handleError(error.message, error.status, 'OrderRepository.createOrder()');
     }
   }
 

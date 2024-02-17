@@ -1,8 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ProductModel } from './product.model';
+import { IsInt, IsNotEmpty, IsArray, ValidateNested, IsNumber, IsDate } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class OrderModel {
   @ApiProperty({ example: 1, description: 'Order identifier' })
+  @IsNotEmpty()
+  @IsInt()
   id: number;
 
   @ApiProperty({
@@ -16,14 +20,24 @@ export class OrderModel {
     ],
     description: 'Order products list',
   })
+  @IsNotEmpty()
+  @IsArray()
+  @ValidateNested()
+  @Type(() => ProductModel)
   products: ProductModel[];
 
-  @ApiProperty({ example: '2023-10-04', description: 'Product identifier' })
+  @ApiProperty({ example: '2023-10-04', description: 'Order Date' })
+  @IsNotEmpty()
+  @IsDate()
   date: Date;
 
-  @ApiProperty({ example: 1, description: 'Product identifier' })
+  @IsNotEmpty()
+  @IsInt()
+  @ApiProperty({ example: 1, description: 'User identifier' })
   user: number;
 
-  @ApiProperty({ example: 1, description: 'Product identifier' })
+  @IsNotEmpty()
+  @IsNumber()
+  @ApiProperty({ example: 1, description: 'Total price' })
   total: number;
 }

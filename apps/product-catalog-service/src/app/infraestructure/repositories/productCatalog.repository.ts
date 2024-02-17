@@ -28,7 +28,7 @@ export class ProductCatalogRepository implements ProductCatalogIRepository {
         throw new NotFoundException();
       }
     } catch (error) {
-      ErrorHandler.handleError(error.message, error.errorCode, 'ProductCatalogRepository.getProduct()');
+      ErrorHandler.handleError(error.message, error.status, 'ProductCatalogRepository.getProduct()');
     }
   }
 
@@ -42,7 +42,7 @@ export class ProductCatalogRepository implements ProductCatalogIRepository {
       const products = await this.productsRepository.find();
       return products;
     } catch (error) {
-      ErrorHandler.handleError(error.message, error.errorCode, 'ProductCatalogRepository.getProductCatalog()');
+      ErrorHandler.handleError(error.message, error.status, 'ProductCatalogRepository.getProductCatalog()');
     }
   }
 
@@ -57,7 +57,7 @@ export class ProductCatalogRepository implements ProductCatalogIRepository {
       const response = await this.productsRepository.save(product);
       return JSON.stringify(response);
     } catch (error) {
-      ErrorHandler.handleError(error.message, error.errorCode, 'ProductCatalogRepository.createProduct()');
+      ErrorHandler.handleError(error.message, error.status, 'ProductCatalogRepository.createProduct()');
     }
   }
 
@@ -82,7 +82,7 @@ export class ProductCatalogRepository implements ProductCatalogIRepository {
         throw new NotFoundException();
       }
     } catch (error) {
-      ErrorHandler.handleError(error.message, error.errorCode, 'ProductCatalogRepository.updateProduct()');
+      ErrorHandler.handleError(error.message, error.status, 'ProductCatalogRepository.updateProduct()');
     }
   }
 
@@ -107,7 +107,7 @@ export class ProductCatalogRepository implements ProductCatalogIRepository {
         throw new NotFoundException();
       }
     } catch (error) {
-      ErrorHandler.handleError(error.message, error.errorCode, 'ProductCatalogRepository.updateProductAmount()');
+      ErrorHandler.handleError(error.message, error.status, 'ProductCatalogRepository.updateProductAmount()');
     }
   }
 
@@ -127,7 +127,7 @@ export class ProductCatalogRepository implements ProductCatalogIRepository {
         throw new NotFoundException();
       }
     } catch (error) {
-      ErrorHandler.handleError(error.message, error.errorCode, 'ProductCatalogRepository.removeProduct()');
+      ErrorHandler.handleError(error.message, error.status, 'ProductCatalogRepository.removeProduct()');
     }
   }
 }
