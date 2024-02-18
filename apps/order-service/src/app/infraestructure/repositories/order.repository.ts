@@ -5,10 +5,11 @@ import { Order, Product } from '@ecommerce/models';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ErrorHandler } from '@ecommerce/error';
+import { KAFKA_CLIENT, KAFKA_ORDER_TYPES, KAFKA_TOPICS } from '@ecommerce/constants';
 
 export class OrderRepository implements OrderIRepository {
   constructor(
-    @Inject(`KAFKA_CLIENT`) private readonly kafkaClient: ClientKafka,
+    @Inject(KAFKA_CLIENT) private readonly kafkaClient: ClientKafka,
     @InjectRepository(Order) private orderRepository: Repository<Order>
   ) {}
 
@@ -22,10 +23,10 @@ export class OrderRepository implements OrderIRepository {
     try {
       const result = await this.orderRepository.save(order);
       const message = JSON.stringify({
-        type: 'order-created',
+        type: KAFKA_ORDER_TYPES.ORDER_CREATED,
         data: result,
       });
-      this.kafkaClient.emit('order-events', message);
+      this.kafkaClient.emit(KAFKA_TOPICS.ORDER_EVENTS, message);
       return result;
     } catch (error) {
       ErrorHandler.handleError(error.message, error.status, 'OrderRepository.createOrder()');

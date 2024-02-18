@@ -15,8 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@ecommerce/models": ["libs/models/src/index.ts"],
-      "@ecommerce/error": ["libs/error/src/index.ts"]
+      "@ecommerce/constants": ["libs/constants/src/index.ts"],
+      "@ecommerce/error": ["libs/error/src/index.ts"],
+      "@ecommerce/models": ["libs/models/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

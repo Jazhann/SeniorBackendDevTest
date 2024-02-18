@@ -4,6 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Product } from '../../../libs/models/src/lib/entities/product.entity';
 import { Repository } from 'typeorm';
 import { RpcException } from '@nestjs/microservices';
+import { KAFKA_CLIENT } from '../../../libs/constants/src/lib/constants';
 
 const mockProductsRepository = () => ({
   findOneBy: jest.fn(),
@@ -26,7 +27,7 @@ describe('ProductCatalogRepository', () => {
       providers: [
         ProductCatalogRepository,
         { provide: getRepositoryToken(Product), useFactory: mockProductsRepository },
-        { provide: `KAFKA_CLIENT`, useFactory: mockClientKafka },
+        { provide: KAFKA_CLIENT, useFactory: mockClientKafka },
       ],
     }).compile();
 
@@ -48,8 +49,6 @@ describe('ProductCatalogRepository', () => {
       await expect(productCatalogRepository.getProduct('1')).rejects.toThrow(RpcException);
     });
   });
-
-  // Continuando desde el último ejemplo...
 
   describe('getProductCatalog', () => {
     it('should return an array of products', async () => {

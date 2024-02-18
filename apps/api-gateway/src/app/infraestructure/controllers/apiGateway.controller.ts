@@ -11,6 +11,7 @@ import { ApiOperation, ApiTags, ApiResponse, ApiBody, ApiQuery, ApiBearerAuth } 
 import { LoginModel, OrderModel, ProductModel, UserModel } from '@ecommerce/models';
 import { CreateUser } from '../../aplication/createUser.service';
 import { AuthGuard } from '../guards/auth.guard';
+import { KAFKA_CLIENT } from '@ecommerce/constants';
 @Controller('')
 export class ApiGatewayController implements OnModuleInit {
   constructor(
@@ -22,7 +23,7 @@ export class ApiGatewayController implements OnModuleInit {
     @Inject(Authenticate) private authenticate: Authenticate,
     @Inject(CreateOrder) private createOrder: CreateOrder,
     @Inject(CreateUser) private createUser: CreateUser,
-    @Inject(`KAFKA_CLIENT`) private readonly kafkaClient: ClientKafka
+    @Inject(KAFKA_CLIENT) private readonly kafkaClient: ClientKafka
   ) {}
 
   @ApiTags('product')
