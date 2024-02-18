@@ -1,9 +1,10 @@
 # Ecommerce Microservices Project
 
-This project implements a domain-driven design (DDD) for an e-commerce system. It features microservices built with NestJS, data management with TypeORM, event handling through Kafka, and containerization with Docker.
+This project implements a domain-driven design (DDD) for an e-commerce system. It features microservices built with NestJS in a Nx monorepo, data management with TypeORM, event handling through Kafka, and containerization with Docker.
 
 ## Technologies
 
+- Nx: Extensible dev tools for monorepos, providing a standardized structure and shared configurations.
 - NestJS: Progressive Node.js framework for scalable server-side applications.
 - TypeORM: ORM library for TypeScript and JavaScript.
 - Kafka: Distributed event streaming platform for real-time data processing.
@@ -101,7 +102,7 @@ DB_DATABASE=ecommerce
 
 API documentation is automatically generated using Swagger. Once the services are running, you can access the API documentation at:
 
-- API Gateway: http://localhost:3003/api
+- API Gateway: http://localhost:3003/api/docs
 
 ## Architecture Overview
 
