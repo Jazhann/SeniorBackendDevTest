@@ -3,7 +3,7 @@ import { ProductCatalogRepository } from '../../../apps/product-catalog-service/
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Product } from '../../../libs/models/src/lib/entities/product.entity';
 import { Repository } from 'typeorm';
-import { HttpException } from '@nestjs/common';
+import { RpcException } from '@nestjs/microservices';
 
 const mockProductsRepository = () => ({
   findOneBy: jest.fn(),
@@ -39,13 +39,13 @@ describe('ProductCatalogRepository', () => {
       const mockProduct = { id: 1, name: 'Test Product', value: 100, amount: 10 };
       productsRepository.findOneBy.mockResolvedValue(mockProduct);
       const result = await productCatalogRepository.getProduct('1');
-      expect(result).toEqual(mockProduct);
+      expect(JSON.parse(result)).toEqual(mockProduct);
       expect(productsRepository.findOneBy).toHaveBeenCalledWith({ id: 1 });
     });
 
-    it('should throw HttpException if no product is found', async () => {
+    it('should throw RpcException if no product is found', async () => {
       productsRepository.findOneBy.mockResolvedValue(undefined);
-      await expect(productCatalogRepository.getProduct('1')).rejects.toThrow(HttpException);
+      await expect(productCatalogRepository.getProduct('1')).rejects.toThrow(RpcException);
     });
   });
 
@@ -65,7 +65,7 @@ describe('ProductCatalogRepository', () => {
       const mockProduct = { id: 1, name: 'New Product', value: 200, amount: 5 };
       productsRepository.save.mockResolvedValue(mockProduct);
       const result = await productCatalogRepository.createProduct(mockProduct);
-      expect(result).toEqual(mockProduct);
+      expect(JSON.parse(result)).toEqual(mockProduct);
       expect(productsRepository.save).toHaveBeenCalledWith(mockProduct);
     });
   });
@@ -79,11 +79,11 @@ describe('ProductCatalogRepository', () => {
       expect(productsRepository.update).toHaveBeenCalledWith(mockProduct.id, mockProduct);
     });
 
-    it('should throw HttpException if no product was updated', async () => {
+    it('should throw RpcException if no product was updated', async () => {
       productsRepository.update.mockResolvedValue({ affected: 0 });
       await expect(
         productCatalogRepository.updateProduct({ id: 1, name: 'product', value: 15, amount: 10 })
-      ).rejects.toThrow(HttpException);
+      ).rejects.toThrow(RpcException);
     });
   });
 
@@ -95,9 +95,9 @@ describe('ProductCatalogRepository', () => {
       expect(productsRepository.delete).toHaveBeenCalledWith('someId');
     });
 
-    it('should throw HttpException if no product was removed', async () => {
+    it('should throw RpcException if no product was removed', async () => {
       productsRepository.delete.mockResolvedValue({ affected: 0 });
-      await expect(productCatalogRepository.removeProduct('someId')).rejects.toThrow(HttpException);
+      await expect(productCatalogRepository.removeProduct('someId')).rejects.toThrow(RpcException);
     });
   });
 });
