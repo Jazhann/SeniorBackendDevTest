@@ -11,11 +11,12 @@ import { CreateProduct } from '../../aplication/createProduct.service';
 import { UpdateProduct } from '../../aplication/updateProduct.service';
 import { RemoveProduct } from '../../aplication/removeProduct.service';
 import config from '../../../config';
+import { KAFKA_CLIENT } from '@ecommerce/constants';
 @Module({
   imports: [
     ClientsModule.register([
       {
-        name: 'KAFKA_CLIENT',
+        name: KAFKA_CLIENT,
         transport: Transport.KAFKA,
         options: {
           client: {

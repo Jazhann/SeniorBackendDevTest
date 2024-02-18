@@ -1,4 +1,4 @@
-import { HttpStatus, Inject, Logger, UnauthorizedException } from '@nestjs/common';
+import { Inject, Logger, UnauthorizedException } from '@nestjs/common';
 import { AuthenticationIRepository } from '../../domain/authentication.i.repository';
 import { ClientKafka } from '@nestjs/microservices';
 import { JwtService } from '@nestjs/jwt';
@@ -8,10 +8,10 @@ import { Login, User } from '@ecommerce/models';
 import * as bcrypt from 'bcryptjs';
 import { ErrorHandler } from '@ecommerce/error';
 import config from '../../../config';
-
+import { KAFKA_CLIENT, KAFKA_TOPICS, KAFKA_USER_TYPES } from '@ecommerce/constants';
 export class AuthenticationRepository implements AuthenticationIRepository {
   constructor(
-    @Inject(`KAFKA_CLIENT`) private readonly kafkaClient: ClientKafka,
+    @Inject(KAFKA_CLIENT) private readonly kafkaClient: ClientKafka,
     @InjectRepository(User) private userRepository: Repository<User>,
     private readonly jwtService: JwtService
   ) {}
@@ -46,7 +46,10 @@ export class AuthenticationRepository implements AuthenticationIRepository {
       const user = await this.userRepository.findOneBy({ email: login.email });
       if (user && (await bcrypt.compare(login.password, user.password))) {
         const { password, ...payload } = user;
-        this.kafkaClient.emit('user-events', JSON.stringify({ type: 'user-loged', data: user }));
+        this.kafkaClient.emit(
+          KAFKA_TOPICS.USER_EVENTS,
+          JSON.stringify({ type: KAFKA_USER_TYPES.USER_LOGED, data: user })
+        );
         return { token: await this.jwtService.signAsync(payload) };
       } else {
         throw new UnauthorizedException();

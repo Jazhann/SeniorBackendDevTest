@@ -9,12 +9,13 @@ import { Order } from '@ecommerce/models';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UpdateOrder } from '../../aplication/updateOrder.service';
 import config from '../../../config';
+import { KAFKA_CLIENT } from '@ecommerce/constants';
 
 @Module({
   imports: [
     ClientsModule.register([
       {
-        name: 'KAFKA_CLIENT',
+        name: KAFKA_CLIENT,
         transport: Transport.KAFKA,
         options: {
           client: {

@@ -2,10 +2,11 @@ import { CanActivate, ExecutionContext, Inject, Injectable, OnModuleInit, Unauth
 import { ClientKafka } from '@nestjs/microservices';
 import { Request } from 'express';
 import { lastValueFrom } from 'rxjs';
+import { KAFKA_CLIENT, KAFKA_TOPICS } from '@ecommerce/constants';
 
 @Injectable()
 export class AuthGuard implements CanActivate, OnModuleInit {
-  constructor(@Inject(`KAFKA_CLIENT`) private readonly kafkaClient: ClientKafka) {}
+  constructor(@Inject(KAFKA_CLIENT) private readonly kafkaClient: ClientKafka) {}
 
   /**
    * Determines if the current request is authorized by validating the JWT token.
@@ -23,7 +24,7 @@ export class AuthGuard implements CanActivate, OnModuleInit {
     try {
       // Constructs and sends a verification message to the 'user-events' topic.
       const message = JSON.stringify({ type: 'verify', data: token });
-      const payload = await lastValueFrom(this.kafkaClient.send('user-events', message));
+      const payload = await lastValueFrom(this.kafkaClient.send(KAFKA_TOPICS.USER_MESSAGES, message));
       // Attach user details to request for further use.
       request['user'] = payload;
     } catch {
@@ -47,6 +48,6 @@ export class AuthGuard implements CanActivate, OnModuleInit {
    * Initializes the Kafka client subscription to the 'user-events' topic.
    */
   onModuleInit() {
-    this.kafkaClient.subscribeToResponseOf('user-events');
+    this.kafkaClient.subscribeToResponseOf(KAFKA_TOPICS.USER_MESSAGES);
   }
 }

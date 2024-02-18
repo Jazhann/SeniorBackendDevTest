@@ -12,12 +12,13 @@ import { ApiGatewayController } from './apiGateway.controller';
 import { ApiGatewayIRepository } from '../../domain/apiGateway.i.repository';
 import { CreateUser } from '../../aplication/createUser.service';
 import config from '../../../config';
+import { KAFKA_CLIENT } from '@ecommerce/constants';
 
 @Module({
   imports: [
     ClientsModule.register([
       {
-        name: 'KAFKA_CLIENT',
+        name: KAFKA_CLIENT,
         transport: Transport.KAFKA,
         options: {
           client: {

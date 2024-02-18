@@ -7,6 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import config from '../../../apps/authentication-service/src/config';
 import { RpcException } from '@nestjs/microservices';
+import { KAFKA_CLIENT } from '../../../libs/constants/src/lib/constants';
 
 jest.mock('bcryptjs');
 
@@ -35,7 +36,7 @@ describe('AuthenticationRepository', () => {
         AuthenticationRepository,
         { provide: getRepositoryToken(User), useFactory: mockUserRepository },
         { provide: JwtService, useFactory: mockJwtService },
-        { provide: `KAFKA_CLIENT`, useFactory: mockClientKafka },
+        { provide: KAFKA_CLIENT, useFactory: mockClientKafka },
       ],
     }).compile();
 

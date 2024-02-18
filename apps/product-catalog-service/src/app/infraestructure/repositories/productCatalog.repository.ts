@@ -5,10 +5,11 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ClientKafka } from '@nestjs/microservices';
 import { ErrorHandler } from '@ecommerce/error';
+import { KAFKA_CLIENT, KAFKA_PRODUCT_TYPES, KAFKA_TOPICS } from '@ecommerce/constants';
 
 export class ProductCatalogRepository implements ProductCatalogIRepository {
   constructor(
-    @Inject(`KAFKA_CLIENT`) private readonly kafkaClient: ClientKafka,
+    @Inject(KAFKA_CLIENT) private readonly kafkaClient: ClientKafka,
     @InjectRepository(Product) private productsRepository: Repository<Product>
   ) {}
 
@@ -73,10 +74,10 @@ export class ProductCatalogRepository implements ProductCatalogIRepository {
       const result = await this.productsRepository.update(product.id, product);
       if (result.affected > 0) {
         const message = JSON.stringify({
-          type: 'product-updated',
+          type: KAFKA_PRODUCT_TYPES.PRODUCT_UPDATED,
           data: product,
         });
-        this.kafkaClient.emit('product-events', message);
+        this.kafkaClient.emit(KAFKA_TOPICS.PRODUCT_EVENTS, message);
         return { result: 'ok' };
       } else {
         throw new NotFoundException();
@@ -97,11 +98,6 @@ export class ProductCatalogRepository implements ProductCatalogIRepository {
     try {
       const result = await this.productsRepository.decrement({ id: product.id }, 'amount', product.amount);
       if (result.affected > 0) {
-        const message = JSON.stringify({
-          type: 'product-updated',
-          data: product,
-        });
-        this.kafkaClient.emit('product-events', message);
         return { result: 'ok' };
       } else {
         throw new NotFoundException();

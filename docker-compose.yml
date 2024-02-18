@@ -19,7 +19,7 @@ services:
       KAFKA_LISTENERS: INSIDE://0.0.0.0:9092,OUTSIDE://0.0.0.0:9093
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_CREATE_TOPICS: 'user-events:1:1,order-events:1:1,product-events:1:1'
+      KAFKA_CREATE_TOPICS: 'user-events:1:1,order-events:1:1,product-events:1:1,user-messages:1:1,order-messages:1:1,product-messages:1:1'
     networks:
       - kafka-net
 

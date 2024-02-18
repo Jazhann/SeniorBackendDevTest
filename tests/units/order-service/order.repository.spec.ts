@@ -3,13 +3,12 @@ import { OrderRepository } from '../../../apps/order-service/src/app/infraestruc
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Order } from '../../../libs/models/src/lib/entities/order.entity';
 import { Repository } from 'typeorm';
+import { KAFKA_CLIENT } from '../../../libs/constants/src/lib/constants';
 
-// Mock del repositorio de TypeORM para Order
 const mockOrderRepository = () => ({
   save: jest.fn(),
 });
 
-// Mock para el cliente Kafka
 const mockClientKafka = () => ({
   emit: jest.fn(),
 });
@@ -25,7 +24,7 @@ describe('OrderRepository', () => {
       providers: [
         OrderRepository,
         { provide: getRepositoryToken(Order), useFactory: mockOrderRepository },
-        { provide: `KAFKA_CLIENT`, useValue: clientKafkaMock },
+        { provide: KAFKA_CLIENT, useValue: clientKafkaMock },
       ],
     }).compile();
 
