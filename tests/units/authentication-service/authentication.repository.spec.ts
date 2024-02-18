@@ -5,8 +5,8 @@ import { User } from '../../../libs/models/src/lib/entities/user.entity';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
-import { jwtConstants } from '../../../apps/authentication-service/src/app/infraestructure/controllers/auth.constants';
-import { HttpException } from '@nestjs/common';
+import config from '../../../apps/authentication-service/src/config';
+import { RpcException } from '@nestjs/microservices';
 
 jest.mock('bcryptjs');
 
@@ -66,7 +66,7 @@ describe('AuthenticationRepository', () => {
         ...user,
         password: passwordHashed,
       });
-      expect(bcrypt.hash).toHaveBeenCalledWith('plainPassword', 10);
+      expect(bcrypt.hash).toHaveBeenCalledWith('plainPassword', config.saltRounds);
     });
   });
 
@@ -93,7 +93,7 @@ describe('AuthenticationRepository', () => {
       userRepositoryMock.findOneBy.mockResolvedValue(user);
       (bcrypt.compare as jest.Mock).mockResolvedValue(false);
 
-      await expect(authenticationRepository.authenticate(login)).rejects.toThrow(HttpException);
+      await expect(authenticationRepository.authenticate(login)).rejects.toThrow(RpcException);
     });
   });
 
@@ -107,7 +107,7 @@ describe('AuthenticationRepository', () => {
       const result = await authenticationRepository.verifyToken(token);
 
       expect(result).toEqual(payload);
-      expect(jwtServiceMock.verifyAsync).toHaveBeenCalledWith(token, { secret: jwtConstants.secret });
+      expect(jwtServiceMock.verifyAsync).toHaveBeenCalledWith(token, { secret: config.jwtSecret });
     });
   });
 });
